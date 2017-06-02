@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IArticleDao" >
+  <resultMap id="ArticleResultMap" type="com.khealth.user.pojo.Article" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="articleName" property="articleName" jdbcType="VARCHAR" />
+    <result column="articleTime" property="articleTime" jdbcType="VARCHAR" />
+    <result column="articleWriter" property="articleWriter" jdbcType="VARCHAR" />
+    <result column="articleFrom" property="articleFrom" jdbcType="VARCHAR" />
+    <result column="articleContent" property="articleContent" jdbcType="VARCHAR" />
+    <result column="articleGroup" property="articleGroup" jdbcType="INTEGER" />
+    <result column="articleType" property="articleType" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="replyNum" property="replyNum" jdbcType="INTEGER" />
+    <result column="favNum" property="favNum" jdbcType="INTEGER" />
+    <result column="shareNum" property="shareNum" jdbcType="INTEGER" />
+    <result column="clickNum" property="clickNum" jdbcType="INTEGER" />
+    <result column="praiseNum" property="praiseNum" jdbcType="INTEGER" />
+    <result column="articleDesc" property="articleDesc" jdbcType="VARCHAR" />
+    <result column="articleImg" property="articleImg" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Article_Column_List" >
+    id, articleName, articleTime, articleWriter, articleFrom, articleContent, articleGroup, articleType, status, replyNum, 
+    favNum, shareNum, clickNum, praiseNum, articleDesc, articleImg
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Article" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into article (articleName, articleTime, articleWriter, articleFrom, articleContent, articleGroup, articleType, status, replyNum, 
+    favNum, shareNum, clickNum, praiseNum, articleDesc, articleImg)
+    values (#{articleName,jdbcType=VARCHAR}, #{articleTime,jdbcType=VARCHAR}, #{articleWriter,jdbcType=VARCHAR}, #{articleFrom,jdbcType=VARCHAR}, 
+    #{articleContent,jdbcType=VARCHAR}, #{articleGroup,jdbcType=INTEGER}, #{articleType,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+    #{replyNum,jdbcType=INTEGER}, #{favNum,jdbcType=INTEGER}, #{shareNum,jdbcType=INTEGER}, #{clickNum,jdbcType=INTEGER}, #{praiseNum,jdbcType=INTEGER}, 
+    #{articleDesc,jdbcType=VARCHAR}, #{articleImg,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from article where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Article" >
+    update article
+    set articleName = #{articleName},
+      articleTime = #{articleTime},
+      articleWriter = #{articleWriter},
+      articleFrom = #{articleFrom},
+      articleContent = #{articleContent},
+      articleGroup = #{articleGroup},
+      articleType = #{articleType},
+      status = #{status},
+      replyNum = #{replyNum},
+      favNum = #{favNum},
+      shareNum = #{shareNum},
+      clickNum = #{clickNum},
+      praiseNum = #{praiseNum},
+      articleDesc = #{articleDesc},
+      articleImg = #{articleImg}
+    where id = #{id}
+  </update>
+  
+  <update id="updateStatus" parameterType="com.khealth.user.pojo.Article" >
+    update article
+    set status = #{status}
+    where id = #{id}
+  </update>  
+  
+  <update id="updateClickNum" parameterType="java.lang.Integer" >
+    update article
+    set clickNum = clickNum + 1
+    where id = #{id}
+  </update>
+  
+  <update id="updateFavNum"  parameterType="java.lang.Integer" >
+    update article
+    set favNum = favNum + 1 
+    where id = #{id}
+  </update>
+  
+  <update id="minusFavNum"  parameterType="java.lang.Integer" >
+    update article
+    set favNum = favNum - 1 
+    where id = #{id}
+  </update>
+  
+  <update id="updateShareNum" parameterType="java.lang.Integer" >
+    update article
+    set shareNum = shareNum + 1
+    where id = #{id}
+  </update>
+  
+  <update id="updatePraiseNum"  parameterType="java.lang.Integer" >
+    update article
+    set praiseNum = praiseNum + 1
+    where id = #{id}
+  </update>  
+  
+  <update id="updateReplyNum" parameterType="java.lang.Integer" >
+    update article
+    set replyNum = replyNum + 1
+    where id = #{id}
+  </update>
+    
+  <select id="selectArticleById" resultMap="ArticleResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Article_Column_List" />
+    from article
+    where id = #{id}
+  </select>
+    
+  <select id="selectTopArticles" resultMap="ArticleResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Article_Column_List" />
+    from article
+    where articleType = 0
+    order by id desc limit 0, #{num}
+  </select> 
+    
+  <select id="selectArticlesByPage" resultMap="ArticleResultMap" >
+    select 
+    <include refid="Article_Column_List" />
+    from article
+    where articleType = 0
+  </select> 
+    
+  <select id="selectProfessionalArticle" resultMap="ArticleResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Article_Column_List" />
+    from article
+    where articleType = 1 and articleGroup = 1
+  </select>
+    
+  <select id="selectProfessionalArticlesByPage" resultMap="ArticleResultMap" >
+    select 
+    <include refid="Article_Column_List" />
+    from article
+    where articleType = 1
+  </select> 
+</mapper>

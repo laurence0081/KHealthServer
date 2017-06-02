@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IUserDao" >
+  <resultMap id="UserResultMap" type="com.khealth.user.pojo.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="imgURL" property="imgURL" jdbcType="VARCHAR" />
+    <result column="birthday" property="birthday" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="coin" property="coin" jdbcType="INTEGER" />
+    <result column="money" property="money" jdbcType="DOUBLE" />
+    <result column="couponNum" property="couponNum" jdbcType="INTEGER" />
+    <result column="couponIds" property="couponIds" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="favNum" property="favNum" jdbcType="INTEGER" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="commentNum" property="commentNum" jdbcType="INTEGER" />
+    <result column="articleNum" property="articleNum" jdbcType="INTEGER" />
+    <result column="regTime" property="regTime" jdbcType="VARCHAR" />
+    <result column="HXname" property="HXname" jdbcType="VARCHAR" />
+    <result column="HXpwd" property="HXpwd" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="User_Column_List" >
+    id, username, nickname, password, imgURL, birthday, sex, cellphone, coin, money, couponNum, couponIds, email, favNum, age, commentNum, articleNum, regTime, HXname, HXpwd
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.User" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into user (username, nickname, password, imgURL, birthday, sex, cellphone, coin, money, couponNum, couponIds, email, favNum, age, commentNum, articleNum, regTime, HXname, HXpwd)
+    values (#{username,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{imgURL,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
+    #{sex,jdbcType=INTEGER}, #{cellphone,jdbcType=VARCHAR}, #{coin,jdbcType=INTEGER}, #{money,jdbcType=DOUBLE}, #{couponNum,jdbcType=INTEGER}, #{couponIds,jdbcType=VARCHAR}, 
+    #{email,jdbcType=VARCHAR}, #{favNum,jdbcType=INTEGER}, #{age,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER}, #{articleNum,jdbcType=INTEGER}, #{regTime,jdbcType=VARCHAR}, 
+    #{HXname,jdbcType=VARCHAR}, #{HXpwd,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.User" >
+    update user
+    set username = #{username},
+      nickname = #{nickname},
+      password = #{password},
+      imgURL = #{imgURL},
+      birthday = #{birthday},
+      sex = #{sex},
+      cellphone = #{cellphone},
+      coin = #{coin},
+      money = #{money},
+      couponNum = #{couponNum},
+      couponIds = #{couponIds},
+      email = #{email},
+      favNum = #{favNum},
+      age = #{age},
+      commentNum = #{commentNum},
+      articleNum = #{articleNum},
+      regTime = #{regTime},
+      HXname = #{HXname},
+      HXpwd = #{HXpwd}
+    where id = #{id}
+  </update>
+  
+  <update id="updateNickname" >
+    update user
+    set nickname = #{1}
+    where id = #{0}
+  </update>
+  
+  <update id="updateImg" >
+    update user
+    set imgURL = #{1}
+    where id = #{0}
+  </update>
+  
+  <update id="updateCommentNum" parameterType="java.lang.Integer" >
+    update user
+    set commentNum = commentNum + 1
+    where id = #{id}
+  </update>
+  
+  <update id="updateFavNum" parameterType="java.lang.Integer" >
+    update user
+    set favNum = favNum + 1
+    where id = #{id}
+  </update>
+  
+  <update id="minusFavNum" parameterType="java.lang.Integer" >
+    update user
+    set favNum = favNum - 1
+    where id = #{id}
+  </update>
+  
+  <update id="updateArticleNum" parameterType="java.lang.Integer" >
+    update user
+    set articleNum = articleNum + 1
+    where id = #{id}
+  </update>
+  
+  <update id="minusArticleNum" parameterType="java.lang.Integer" >
+    update user
+    set articleNum = articleNum - 1
+    where id = #{id}
+  </update>
+  
+  <update id="depositMoney" >
+    update user
+    set money = money + #{1}
+    where id = #{0}
+  </update>
+	
+  <update id="depositCoin" >
+    update user
+    set coin = coin + #{1}
+    where id = #{0}
+  </update>
+  
+  <update id="withdrawMoney" >
+    update user
+    set money = money - #{1}
+    where id = #{0}
+  </update>
+	
+  <update id="withdrawCoin" >
+    update user
+    set coin = coin - #{1}
+    where id = #{0}
+  </update>	
+  
+  <select id="selectById" resultMap="UserResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="User_Column_List" />
+    from user
+    where id = #{id}
+  </select>
+    
+  <select id="selectByCellphone" resultMap="UserResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="User_Column_List" />
+    from user
+    where cellphone = #{cellphone}
+  </select>
+ 
+  <select id="selectByCellphonePWD" resultMap="UserResultMap" >
+    select 
+    <include refid="User_Column_List" />
+    from user
+    where cellphone = #{0} and password = #{1}
+  </select>
+      
+  <select id="selectImgById" resultType="java.lang.String" parameterType="java.lang.Integer" >
+    select 
+    imgURL
+    from user
+    where id = #{id}
+  </select>
+</mapper>

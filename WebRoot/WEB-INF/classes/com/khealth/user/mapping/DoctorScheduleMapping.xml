@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IDoctorScheduleDao" >
+  <resultMap id="DoctorScheduleResultMap" type="com.khealth.user.pojo.DoctorSchedule" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="doctorId" property="doctorId" jdbcType="INTEGER" />
+    <result column="appointmentDate" property="appointmentDate" jdbcType="VARCHAR" />
+    <result column="appointmentTime" property="appointmentTime" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="DoctorSchedule_Column_List" >
+    id, doctorId, appointmentDate, appointmentTime, type
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.DoctorSchedule" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into doctorSchedule (doctorId, appointmentDate, appointmentTime, type)
+    values (#{doctorId,jdbcType=INTEGER}, #{appointmentDate,jdbcType=VARCHAR}, #{appointmentTime,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from doctorSchedule
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.DoctorSchedule" >
+    update doctorSchedule
+    set doctorId = #{doctorId},
+      appointmentDate = #{appointmentDate},
+      appointmentTime = #{appointmentTime},
+      type = #{type}
+    where id = #{id}
+  </update>  
+  
+  <update id="updateAppointmentTime" parameterType="com.khealth.user.pojo.DoctorSchedule" >
+    update doctorSchedule
+    set doctorId = #{doctorId},
+      appointmentDate = #{appointmentDate},
+      appointmentTime = #{appointmentTime},
+      type = #{type}
+    where doctorId = #{doctorId} and appointmentTime = #{appointmentTime}
+  </update>  
+  
+  <select id="selectById" resultMap="DoctorScheduleResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="DoctorSchedule_Column_List" />
+    from doctorSchedule
+    where id = #{id}
+  </select>
+  
+  <select id="selectByDoctorId" resultMap="DoctorScheduleResultMap" >
+    select 
+    <include refid="DoctorSchedule_Column_List" />
+    from doctorSchedule
+    where doctorId = #{doctorId}
+  </select>  
+  
+  <select id="selectByDoctorIdApTime" resultMap="DoctorScheduleResultMap" >
+    select 
+    <include refid="DoctorSchedule_Column_List" />
+    from doctorSchedule
+    where doctorId = #{0} and appointmentTime = #{1}
+  </select>
+</mapper>

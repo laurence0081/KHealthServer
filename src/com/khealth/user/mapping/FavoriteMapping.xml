@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IFavoriteDao" >
+  <resultMap id="FavoriteResultMap" type="com.khealth.user.pojo.Favorite" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userId" jdbcType="INTEGER" />
+    <result column="favId" property="favId" jdbcType="VARCHAR" />
+    <result column="favTitle" property="favTitle" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Favorite_Column_List" >
+    id, userId, favId, favTitle, time
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Favorite" useGeneratedKeys="true" keyProperty="id" >  
+  <selectKey resultType="int" keyProperty="id" >
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into favorite (userId, favId, favTitle, time)
+    values (#{userId,jdbcType=INTEGER}, #{favId,jdbcType=VARCHAR},
+    #{favTitle,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from favorite
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Favorite" >
+    update favorite
+    set userId = #{userId},
+      favId = #{favId},
+      favTitle = #{favTitle},
+      time = #{time}
+    where id = #{id}
+  </update>
+  
+  <select id="selectById" resultMap="FavoriteResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Favorite_Column_List" />
+    from favorite
+    where id = #{id}
+  </select>   
+  
+  <select id="selectByUserId" resultMap="FavoriteResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Favorite_Column_List" />
+    from favorite
+    where userId = #{userId}  order by id desc
+  </select> 
+</mapper>

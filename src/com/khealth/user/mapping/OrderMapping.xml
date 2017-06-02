@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IOrderDao" >
+  <resultMap id="OrderResultMap" type="com.khealth.user.pojo.Order" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="doctorId" property="doctorId" jdbcType="INTEGER" />
+    <result column="userId" property="userId" jdbcType="INTEGER" />
+    <result column="appointmentDate" property="appointmentDate" jdbcType="VARCHAR" />
+    <result column="appointmentTime" property="appointmentTime" jdbcType="INTEGER" />
+    <result column="appointmentPlace" property="appointmentPlace" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="price" property="price" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Order_Column_List" >
+    id, doctorId, userId, appointmentDate, appointmentTime, appointmentPlace, type, price, status, comment
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Order" useGeneratedKeys="true" keyProperty="id" >  
+  <selectKey resultType="int" keyProperty="id" >
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into order (doctorId, userId, appointmentDate, appointmentTime, appointmentPlace, type, price, status, comment)
+    values (#{doctorId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{appointmentDate,jdbcType=VARCHAR}, #{appointmentTime,jdbcType=INTEGER}, 
+    #{appointmentPlace,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{price,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from order
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Order" >
+    update order
+    set doctorId = #{doctorId},
+      userId = #{userId},
+      appointmentDate = #{appointmentDate},
+      appointmentTime = #{appointmentTime},
+      appointmentPlace = #{appointmentPlace},
+      type = #{type},
+      price = #{price},
+      status = #{status},
+      comment = #{comment}
+    where id = #{id}
+  </update>
+  
+  <select id="selectById" resultMap="OrderResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Order_Column_List" />
+    from order
+    where id = #{id}
+  </select>   
+  
+  <select id="selectByUserId" resultMap="OrderResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Order_Column_List" />
+    from order
+    where doctorId = #{doctorId}
+  </select> 
+  
+  <select id="selectByDoctorId" resultMap="OrderResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Order_Column_List" />
+    from order
+    where userId = #{userId}
+  </select> 
+  
+  <select id="selectByAppointmentDate" resultMap="OrderResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Order_Column_List" />
+    from order
+    where appointmentDate = #{appointmentDate}
+  </select> 
+  
+  <select id="selectByParaId" resultMap="OrderResultMap" parameterType="com.khealth.user.pojo.Order" >
+    select 
+    <include refid="Order_Column_List" />
+    from order
+    where 1 = 1
+    <if test="doctorId!=null and doctorId!='' ">
+	 and doctorId = #{doctorId}
+    </if>
+    <if test="userId!=null and userId!='' ">
+	 and userId = #{userId}
+    </if>
+    <if test="appointmentDate!=null and appointmentDate!='' ">
+	 and appointmentDate = #{appointmentDate}
+    </if>
+    <if test="appointmentTime!=null and appointmentTime!='' ">
+	 and appointmentTime = #{appointmentTime}
+    </if>
+  </select> 
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.ICouponDao" >
+  <resultMap id="CouponResultMap" type="com.khealth.user.pojo.Coupon" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DOUBLE" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="imgURL" property="imgURL" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="beginTime" property="beginTime" jdbcType="VARCHAR" />
+    <result column="endTime" property="endTime" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Coupon_Column_List" >
+    id, name, amount, type, imgURL, time, beginTime, endTime, status
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Coupon" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into coupon (name, amount, type, imgURL, time, beginTime, endTime)
+    values (#{name,jdbcType=VARCHAR}, #{amount,jdbcType=DOUBLE}, #{type,jdbcType=INTEGER}, #{imgURL,jdbcType=INTEGER}, 
+    #{time,jdbcType=VARCHAR}, #{beginTime,jdbcType=VARCHAR}, #{endTime,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from coupon where id = #{id}
+  </delete>
+
+  <update id="update" parameterType="com.khealth.user.pojo.Coupon" >
+    update coupon
+    set name = #{name},
+      amount = #{amount},
+      type = #{type},
+      imgURL = #{imgURL},
+      time = #{time},
+      beginTime = #{beginTime},
+      endTime = #{endTime},
+      status = #{status}
+    where id = #{id}
+  </update>
+    
+  <select id="selectById" resultMap="CouponResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Coupon_Column_List" />
+    from coupon
+    where id = #{id}
+  </select>
+  
+  <select id="selectAllByPage" resultMap="CouponResultMap" parameterType="com.khealth.user.pojo.Coupon" >
+    select 
+    <include refid="Coupon_Column_List" />
+    from coupon
+    where status = 1
+  </select>
+  
+  <select id="selectByTypeByPage" resultMap="CouponResultMap" parameterType="com.khealth.user.pojo.Coupon" >
+    select 
+    <include refid="Coupon_Column_List" />
+    from coupon
+    where status = 1 and type = #{type}
+  </select>
+</mapper>

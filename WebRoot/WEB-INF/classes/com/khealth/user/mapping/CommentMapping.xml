@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.ICommentDao" >
+  <resultMap id="CommentResultMap" type="com.khealth.user.pojo.Comment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="targetId" property="targetId" jdbcType="VARCHAR" />
+    <result column="userId" property="userId" jdbcType="INTEGER" />
+    <result column="commentedId" property="commentedId" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="replyId" property="replyId" jdbcType="INTEGER" />
+    <result column="parentId" property="parentId" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Comment_Column_List" >
+    id, targetId, userId, commentedId, content, time, replyId, parentId
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Comment" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into comment (targetId, userId, commentedId, content, time, replyId, parentId)
+    values (#{targetId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{commentedId,jdbcType=INTEGER},
+    #{content,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR}, #{replyId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer">
+    delete from comment
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Comment" >
+    update comment
+    set targetId = #{targetId},
+      userId = #{userId},
+      commentedId = #{commentedId},
+      content = #{content},
+      time = #{time},
+      replyId = #{replyId},
+      parentId = #{parentId}
+    where id = #{id}
+  </update>
+
+  <select id="selectTopByTargetId" resultMap="CommentResultMap" >
+    select 
+    <include refid="Comment_Column_List" />
+    from comment
+    where targetId = #{0} order by id desc limit 0, #{1}
+  </select>
+  
+  <select id="selectByTargetId" resultMap="CommentResultMap"  parameterType="java.lang.String" >
+    select 
+    <include refid="Comment_Column_List" />
+    from comment
+    where targetId = #{targetId} order by id desc
+  </select>
+  
+  <select id="selectById" resultMap="CommentResultMap"  parameterType="java.lang.Integer">
+    select 
+    <include refid="Comment_Column_List" />
+    from comment
+    where id = #{id}
+  </select>
+</mapper>

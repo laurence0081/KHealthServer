@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.ISpecialistTeamDao" >
+  <resultMap id="SpecialistTeamResultMap" type="com.khealth.user.pojo.SpecialistTeam" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="imgURL" property="imgURL" jdbcType="VARCHAR" />
+    <result column="skillDesc" property="skillDesc" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="doctorIds" property="doctorIds" jdbcType="VARCHAR" />
+    <result column="coin" property="coin" jdbcType="INTEGER" />
+    <result column="money" property="money" jdbcType="DOUBLE" />
+    <result column="owernId" property="owernId" jdbcType="VARCHAR" />
+    <result column="adminIds" property="adminIds" jdbcType="VARCHAR" />
+    <result column="hospitalIds" property="hospitalIds" jdbcType="VARCHAR" />
+    <result column="departmentIds" property="departmentIds" jdbcType="VARCHAR" />
+    <result column="jobId" property="jobId" jdbcType="INTEGER" />
+    <result column="appointmentAddr" property="appointmentAddr" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="INTEGER" />
+    <result column="point" property="point" jdbcType="FLOAT" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="hospital" property="hospital" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="SpecialistTeam_Column_List" >
+    id, name, imgURL, skillDesc, description, doctorIds, coin, money, owernId, adminIds, hospitalIds, departmentIds, jobId, appointmentAddr, rank, point, department, hospital
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.SpecialistTeam" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into specialistTeam (name, imgURL, skillDesc, description, doctorIds, coin, money, owernId, adminIds, department, hospital)
+    values (#{name,jdbcType=VARCHAR}, #{imgURL,jdbcType=VARCHAR}, #{skillDesc,jdbcType=VARCHAR},  #{description,jdbcType=VARCHAR},
+    #{doctorIds,jdbcType=VARCHAR}, #{coin,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, #{owernId,jdbcType=VARCHAR}, #{adminIds,jdbcType=VARCHAR}, 
+    #{hospitalIds,jdbcType=VARCHAR}, #{departmentIds,jdbcType=VARCHAR}, #{jobId,jdbcType=INTEGER}, #{appointmentAddr,jdbcType=VARCHAR}, 
+    #{rank,jdbcType=INTEGER}, #{point,jdbcType=FLOAT},#{department,jdbcType=VARCHAR}, #{hospital,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from specialistTeam
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.SpecialistTeam" >
+    update specialistTeam
+    set name = #{name},
+      imgURL = #{imgURL},
+      skillDesc = #{skillDesc},
+      description = #{description},
+      doctorIds = #{doctorIds},
+      coin = #{coin},
+      money = #{money},
+      owernId = #{owernId},
+      adminIds = #{adminIds},
+      hospitalIds = #{hospitalIds},
+      departmentIds = #{departmentIds},
+      jobId = #{jobId},
+      appointmentAddr = #{appointmentAddr},
+      rank = #{rank},
+      point = #{point},
+      department = #{department},
+      hospital = #{hospital}
+    where id = #{id}
+  </update>
+    
+  <select id="selectById" resultMap="SpecialistTeamResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="SpecialistTeam_Column_List" />
+    from specialistTeam
+    where id = #{id}
+  </select> 
+      
+  <select id="selectByPage" resultMap="SpecialistTeamResultMap" parameterType="com.khealth.user.pojo.SpecialistTeam" >
+    select 
+    <include refid="SpecialistTeam_Column_List" />
+    from specialistTeam
+    where rank = 0 and status = 1 
+    order by point desc
+  </select>
+  
+  <select id="selectRankByPage" resultMap="SpecialistTeamResultMap" parameterType="com.khealth.user.pojo.SpecialistTeam" >
+    select 
+    <include refid="SpecialistTeam_Column_List" />
+    from specialistTeam
+    where rank = 1 and status = 1 
+    order by point desc
+  </select>
+      
+  <select id="selectAllSpecialistTeamList" resultMap="SpecialistTeamResultMap" >
+    select 
+    <include refid="SpecialistTeam_Column_List" />
+    from specialistTeam
+    order by id desc
+  </select>  
+  
+  <select id="selectByParaByPage" resultMap="SpecialistTeamResultMap" parameterType="com.khealth.user.pojo.SpecialistTeam" >
+    select 
+    <include refid="SpecialistTeam_Column_List" />
+    from specialistTeam
+    where 1 = 1 
+    <if test="hospitalIds!=null and hospitalIds!='' ">
+	 and find_in_set(#{hospitalId}, hospitalIds)
+    </if>
+    <if test="departmentIds!=null and departmentIds!='' ">
+	 and find_in_set(#{departmentId}, departmentIds)
+    </if>
+    <if test="jobIds!=null and jobIds!='' ">
+	 and find_in_set(#{jobId}, jobIds)
+    </if>
+  </select>
+</mapper>

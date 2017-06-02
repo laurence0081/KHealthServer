@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IHospitalDao" >
+  <resultMap id="HospitalResultMap" type="com.khealth.user.pojo.Hospital" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="cityId" property="cityId" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="mark" property="mark" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Hospital_Column_List" >
+    id, name, cityId, type, mark
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Hospital" useGeneratedKeys="true" keyProperty="id" >  
+  <selectKey resultType="int" keyProperty="id" >
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into hospital (name, cityId, type, mark)
+    values (#{name,jdbcType=INTEGER}, #{cityId,jdbcType=INTEGER},
+    #{type,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from hospital
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Hospital" >
+    update hospital
+    set name = #{name},
+      cityId = #{cityId},
+      type = #{type},
+      mark = #{mark}
+    where id = #{id}
+  </update>
+  
+  <select id="selectById" resultMap="HospitalResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Hospital_Column_List" />
+    from hospital
+    where id = #{id}
+  </select>   
+  
+  <select id="selectByCityId" resultMap="HospitalResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Hospital_Column_List" />
+    from hospital
+    where cityId = #{cityId}
+  </select> 
+</mapper>

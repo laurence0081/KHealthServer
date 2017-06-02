@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.khealth.user.dao.IDoctorDao" >
+  <resultMap id="DoctorResultMap" type="com.khealth.user.pojo.Doctor" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="cellphone" property="cellphone" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="imgURL" property="imgURL" jdbcType="VARCHAR" />
+    <result column="selfDesc" property="selfDesc" jdbcType="VARCHAR" />
+    <result column="skillDesc" property="skillDesc" jdbcType="VARCHAR" />
+    <result column="patientDesc" property="patientDesc" jdbcType="VARCHAR" />
+    <result column="serviceNum" property="serviceNum" jdbcType="INTEGER" />
+    <result column="presentNum" property="presentNum" jdbcType="INTEGER" />
+    <result column="fanNum" property="fanNum" jdbcType="INTEGER" />
+    <result column="commentNum" property="commentNum" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="hospitalId" property="hospitalId" jdbcType="INTEGER" />
+    <result column="departmentId" property="departmentId" jdbcType="INTEGER" />
+    <result column="jobId" property="jobId" jdbcType="INTEGER" />
+    <result column="appointmentAddr" property="appointmentAddr" jdbcType="VARCHAR" />
+    <result column="HXname" property="HXname" jdbcType="VARCHAR" />
+    <result column="HXpwd" property="HXpwd" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="INTEGER" />
+    <result column="point" property="point" jdbcType="FLOAT" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="hospital" property="hospital" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Doctor_Column_List" >
+    id, name, cellphone, password, imgURL, selfDesc, skillDesc, patientDesc, serviceNum, presentNum,
+    fanNum, commentNum, status, hospitalId, departmentId, jobId, appointmentAddr, HXname, HXpwd, rank, 
+    point, department, hospital
+  </sql>
+  
+  <insert id="insert" parameterType="com.khealth.user.pojo.Doctor" useGeneratedKeys="true" keyProperty="id">  
+  <selectKey resultType="int" keyProperty="id">
+      SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into doctor (name, cellphone, password, imgURL, selfDesc, skillDesc, patientDesc, serviceNum, 
+    presentNum, fanNum, commentNum, status, hospitalId, departmentId, jobId, appointmentAddr, department, hospital)
+    values (#{name,jdbcType=VARCHAR}, #{cellphone,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{imgURL,jdbcType=VARCHAR}, 
+    #{selfDesc,jdbcType=VARCHAR}, #{skillDesc,jdbcType=VARCHAR}, #{patientDesc,jdbcType=VARCHAR}, #{serviceNum,jdbcType=INTEGER}, 
+    #{presentNum,jdbcType=INTEGER}, #{fanNum,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+    #{hospitalId,jdbcType=INTEGER}, #{departmentId,jdbcType=INTEGER}, #{jobId,jdbcType=INTEGER}, #{appointmentAddr,jdbcType=VARCHAR}, 
+    #{HXname,jdbcType=VARCHAR}, #{HXpwd,jdbcType=VARCHAR}, #{rank,jdbcType=INTEGER}, #{point,jdbcType=FLOAT},
+    #{department,jdbcType=VARCHAR}, #{hospital,jdbcType=VARCHAR})
+  </insert>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from doctor
+    where id = #{id}
+  </delete>
+  
+  <update id="update" parameterType="com.khealth.user.pojo.Doctor" >
+    update doctor
+    set name = #{name},
+      cellphone = #{cellphone},
+      password = #{password},
+      imgURL = #{imgURL},
+      selfDesc = #{selfDesc},
+      skillDesc = #{skillDesc},
+      patientDesc = #{patientDesc},
+      serviceNum = #{serviceNum},
+      presentNum = #{presentNum},
+      fanNum = #{fanNum},
+      commentNum = #{commentNum},
+      status = #{status},
+      hospitalId = #{hospitalId},
+      departmentId = #{departmentId},
+      jobId = #{jobId},
+      appointmentAddr = #{appointmentAddr},
+      HXname = #{HXname},
+      HXpwd = #{HXpwd},
+      rank = #{rank},
+      point = #{point},
+      department = #{department},
+      hospital = #{hospital}
+    where id = #{id}
+  </update>  
+  
+  <select id="selectById" resultMap="DoctorResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where id = #{id}
+  </select>
+  
+  <select id="selectByCellphonePWD" resultMap="DoctorResultMap" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where cellphone = #{0} and password = #{1}
+  </select> 
+  
+  <select id="selectByStatus" resultMap="DoctorResultMap" parameterType="com.khealth.user.pojo.Doctor" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where status = #{status}
+  </select>
+  
+  <select id="selectByPage" resultMap="DoctorResultMap" parameterType="com.khealth.user.pojo.Doctor" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where rank = 0 and status = 1
+    order by point desc
+  </select>
+  
+  <select id="selectRankByPage" resultMap="DoctorResultMap" parameterType="com.khealth.user.pojo.Doctor" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where rank = 1  and status = 1
+    order by point desc
+  </select>
+  
+  <select id="selectByParaByPage" resultMap="DoctorResultMap" parameterType="com.khealth.user.pojo.Doctor" >
+    select 
+    <include refid="Doctor_Column_List" />
+    from doctor
+    where 1 = 1 
+    <if test="hospitalId!=null and hospitalId!='' ">
+	 and hospitalId = #{hospitalId}
+    </if>
+    <if test="departmentId!=null and departmentId!='' ">
+	 and departmentId = #{departmentId}
+    </if>
+    <if test="jobId!=null and jobId!='' ">
+	 and jobId = #{jobId}
+    </if>
+  </select>
+</mapper>
